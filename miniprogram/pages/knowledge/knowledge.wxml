@@ -1,0 +1,47 @@
+<!--knowledge.wxml-->
+<view class="container">
+  <!-- 分类标签 -->
+  <view class="filter-tabs">
+    <scroll-view class="tabs-scroll" scroll-x>
+      <view class="tabs-wrapper">
+        <t-tag 
+          wx:for="{{categories}}" 
+          wx:key="id"
+          theme="{{selectedCategory === item.id ? 'primary' : 'default'}}"
+          size="medium"
+          bind:tap="selectCategory"
+          data-id="{{item.id}}"
+        >
+          {{item.name}}
+        </t-tag>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 文章列表 -->
+  <view class="article-list">
+    <view class="article-item" wx:for="{{articles}}" wx:key="id" bind:tap="viewArticle" data-id="{{item.id}}">
+      <view class="article-image"></view>
+      <view class="article-content">
+        <text class="article-title">{{item.title}}</text>
+        <text class="article-desc">{{item.description}}</text>
+        <view class="article-meta">
+          <text class="article-date">{{item.date}}</text>
+          <text class="article-views">阅读 {{item.views}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 常见问题 -->
+  <view class="section">
+    <text class="section-title">常见问题</text>
+    <view class="faq-list">
+      <view class="faq-item" wx:for="{{faqs}}" wx:key="id">
+        <text class="faq-question">{{item.question}}</text>
+        <text class="faq-answer">{{item.answer}}</text>
+      </view>
+    </view>
+  </view>
+</view>
+

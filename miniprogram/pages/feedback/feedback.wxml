@@ -1,0 +1,163 @@
+<!--feedback.wxml-->
+<view class="container">
+  <!-- 统计卡片 -->
+  <view class="stats-card" wx:if="{{stats && stats.total > 0}}">
+    <view class="stats-title">
+      <t-icon name="chart" size="20px" color="#0052D9" />
+      <text>反馈统计</text>
+    </view>
+    <view class="stats-grid">
+      <view class="stat-item">
+        <text class="stat-value">{{stats.total}}</text>
+        <text class="stat-label">全部反馈</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value pending">{{stats.pending}}</text>
+        <text class="stat-label">待处理</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value processed">{{stats.processed}}</text>
+        <text class="stat-label">已处理</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 反馈表单 -->
+  <view class="form-section">
+    <text class="form-label">问题分类 <text class="required">*</text></text>
+    <view class="category-grid">
+      <view
+        class="category-item {{selectedCategory === item.id ? 'selected' : ''}}"
+        wx:for="{{categories}}"
+        wx:key="id"
+        bind:tap="selectCategory"
+        data-id="{{item.id}}"
+        style="{{selectedCategory === item.id ? 'border-color:' + item.color + ';background:' + item.color + '10' : ''}}"
+      >
+        <t-icon name="{{item.icon}}" size="24px" color="{{selectedCategory === item.id ? item.color : item.color}}" />
+        <text class="category-name" style="{{selectedCategory === item.id ? 'color:' + item.color + ';' : ''}}">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="form-section">
+    <text class="form-label">问题描述 <text class="required">*</text></text>
+    <view class="textarea-wrapper {{description.length > 0 ? 'has-content' : ''}}">
+      <textarea
+        class="description-input"
+        value="{{description}}"
+        placeholder="请详细描述您遇到的问题或建议（至少10个字符）..."
+        maxlength="500"
+        bind:input="onDescriptionChange"
+      ></textarea>
+      <text class="char-count">{{description.length}}/500</text>
+    </view>
+  </view>
+
+  <view class="form-section">
+    <text class="form-label">上传图片（最多3张）</text>
+    <view class="image-upload-section">
+      <view class="image-list">
+        <view class="image-item" wx:for="{{images}}" wx:key="*this">
+          <image class="image-preview" mode="aspectFill" src="{{item}}" />
+          <view class="image-delete" bind:tap="deleteImage" data-index="{{index}}">
+            <t-icon name="close" size="14px" color="#ffffff" />
+          </view>
+        </view>
+        <view class="image-item add-image" wx:if="{{images.length < 3}}" bind:tap="chooseImage">
+          <t-icon name="add" size="32px" color="#999999" />
+          <text class="add-text">上传图片</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="form-section">
+    <text class="form-label">联系方式（可选）</text>
+    <view class="input-wrapper {{contact.length > 0 ? 'has-content' : ''}}">
+      <input
+        class="contact-input"
+        value="{{contact}}"
+        placeholder="手机号、邮箱或微信号"
+        maxlength="50"
+        bind:input="onContactChange"
+      />
+    </view>
+  </view>
+
+  <view class="submit-wrapper">
+    <t-button
+      theme="primary"
+      size="large"
+      block
+      bind:tap="submitFeedback"
+      loading="{{isSubmitting}}"
+    >
+      提交反馈
+    </t-button>
+  </view>
+
+  <!-- 反馈记录 -->
+  <view class="section" wx:if="{{myFeedbacks.length > 0}}">
+    <text class="section-title">我的反馈 ({{myFeedbacks.length}})</text>
+    <view class="feedback-list">
+      <view class="feedback-item" wx:for="{{myFeedbacks}}" wx:key="id">
+        <view class="feedback-header">
+          <view class="feedback-title">
+            <view class="category-tag" style="background: {{getCategoryColor(item.category)}}20; color: {{getCategoryColor(item.category)}}">
+              {{item.categoryName}}
+            </view>
+            <text class="feedback-date">{{item.date || formatDate(item.createTime)}}</text>
+          </view>
+          <view class="feedback-status {{item.status === '已处理' ? 'processed' : ''}}" style="background: {{item.status === '已处理' ? '#00A870' : '#FA8C16'}}20; color: {{item.status === '已处理' ? '#00A870' : '#FA8C16'}}">
+            {{item.status}}
+          </view>
+        </view>
+        <view class="feedback-content" bind:tap="viewFeedbackDetail" data-feedback="{{item}}">
+          <text class="content-text">{{item.description}}</text>
+          <view class="feedback-meta">
+            <text wx:if="{{item.images && item.images.length > 0}}" class="meta-item">
+              <t-icon name="image" size="14px" color="#999999" /> {{item.images.length}}张图片
+            </text>
+            <text class="meta-item">
+              <t-icon name="time" size="14px" color="#999999" /> {{item.date || formatDate(item.createTime)}}
+            </text>
+          </view>
+        </view>
+        <view class="feedback-actions">
+          <view class="action-btn delete" bind:tap="deleteFeedback" data-id="{{item._id || item.id}}" data-index="{{index}}">
+            <t-icon name="delete" size="16px" color="#999999" />
+            <text>删除</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{myFeedbacks.length === 0 && !isLoading}}">
+    <view class="empty-icon">
+      <t-icon name="message" size="48px" color="#cccccc" />
+    </view>
+    <text class="empty-text">暂无反馈记录</text>
+    <text class="empty-hint">提交反馈后记录将保存在这里</text>
+  </view>
+
+  <!-- 加载中 -->
+  <view class="loading-state" wx:if="{{isLoading}}">
+    <t-loading theme="spinner" size="40px" />
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 反馈说明 -->
+  <view class="tips-section">
+    <view class="tip-item">
+      <t-icon name="tips" size="16px" color="#0052D9" />
+      <text class="tip-text">我们重视您的每一条反馈，会尽快处理您的问题</text>
+    </view>
+    <view class="tip-item">
+      <t-icon name="tips" size="16px" color="#0052D9" />
+      <text class="tip-text">提交后可在"我的反馈"中查看处理进度</text>
+    </view>
+  </view>
+</view>

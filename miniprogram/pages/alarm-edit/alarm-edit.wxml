@@ -1,0 +1,199 @@
+<!--alarm-edit.wxml-->
+<view class="container">
+  <!-- 加载状态 -->
+  <view class="loading-wrapper" wx:if="{{loading}}">
+    <t-loading size="40px" />
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 闹钟设置表单 -->
+  <view class="form-wrapper" wx:else>
+    <!-- 时间设置 -->
+    <view class="form-section">
+      <text class="section-title">时间设置</text>
+      <view class="time-picker-wrapper">
+        <picker 
+          mode="multiSelector" 
+          value="{{timeValue}}" 
+          range="{{timeColumns}}"
+          bindchange="onTimeChange"
+        >
+          <view class="time-display">
+            <t-icon name="time" size="20px" color="#0052D9" />
+            <text class="time-text">{{alarm.time}}</text>
+            <text class="time-hint">点击修改时间</text>
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <!-- 标签设置 -->
+    <view class="form-section">
+      <text class="section-title">闹钟标签</text>
+      <t-input
+        value="{{alarm.label}}"
+        placeholder="请输入闹钟标签"
+        maxlength="20"
+        bind:change="onLabelInput"
+      />
+      
+      <!-- 预设标签 -->
+      <view class="preset-labels">
+        <text class="preset-title">快速选择：</text>
+        <view class="label-tags">
+          <text 
+            class="label-tag" 
+            wx:for="{{presetLabels}}" 
+            wx:key="index"
+            data-label="{{item}}"
+            bind:tap="selectPresetLabel"
+          >
+            {{item}}
+          </text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 重复设置 -->
+    <view class="form-section">
+      <text class="section-title">重复设置</text>
+      <t-checkbox-group value="{{alarm.daysOfWeek}}" bind:change="onDaysChange">
+        <view class="day-checkboxes">
+          <t-checkbox 
+            wx:for="{{dayOptions}}" 
+            wx:key="value"
+            value="{{item.value}}"
+            label="{{item.label}}"
+          />
+        </view>
+      </t-checkbox-group>
+      
+      <view class="repeat-summary">
+        <text>重复：{{formatDaysSummary(alarm.daysOfWeek)}}</text>
+      </view>
+    </view>
+
+    <!-- 铃声设置（纯声音） -->
+    <view class="form-section">
+      <text class="section-title">铃声设置</text>
+      
+      <t-radio-group value="{{alarm.sound}}" bind:change="onSoundChange">
+        <view class="radio-options">
+          <t-radio 
+            wx:for="{{soundOptions}}" 
+            wx:key="value"
+            value="{{item.value}}" 
+            label="{{item.label}}"
+            class="sound-radio"
+          />
+        </view>
+      </t-radio-group>
+      
+      <view class="sound-description">
+        <text wx:if="{{alarm.sound === 'birds'}}">• 鸟鸣声：清晨鸟鸣，自然舒适</text>
+        <text wx:elif="{{alarm.sound === 'waves'}}">• 海浪声：海浪拍打沙滩，放松心情</text>
+        <text wx:elif="{{alarm.sound === 'piano'}}">• 钢琴曲：轻柔钢琴音乐，优雅唤醒</text>
+        <text wx:elif="{{alarm.sound === 'chimes'}}">• 风铃声：清脆风铃，清新悦耳</text>
+        <text wx:else>• 默认铃声：系统默认铃声</text>
+      </view>
+    </view>
+
+    <!-- 唤醒方法设置 -->
+    <view class="form-section">
+      <text class="section-title">唤醒方法</text>
+      
+      <t-radio-group value="{{alarm.wakeMethod}}" bind:change="onWakeMethodChange">
+        <view class="radio-options">
+          <t-radio 
+            wx:for="{{wakeMethodOptions}}" 
+            wx:key="value"
+            value="{{item.value}}" 
+            label="{{item.label}}"
+            class="wake-method-radio"
+          />
+        </view>
+      </t-radio-group>
+      
+      <view class="method-description">
+        <text wx:if="{{alarm.wakeMethod === 'gentle'}}">
+          • 轻柔唤醒：音量从低到高逐渐增加，适合浅睡眠阶段唤醒
+        </text>
+        <text wx:elif="{{alarm.wakeMethod === 'natural'}}">
+          • 自然唤醒：模拟自然环境变化，配合光线渐变
+        </text>
+        <text wx:elif="{{alarm.wakeMethod === 'smart'}}">
+          • 智能唤醒：分析睡眠周期，在最佳时机唤醒
+        </text>
+        <text wx:else>
+          • 经典唤醒：准时响起，传统闹钟方式
+        </text>
+      </view>
+
+      <!-- 组合预览 -->
+      <view class="combination-preview" wx:if="{{alarm.sound && alarm.wakeMethod}}">
+        <text class="combination-title">组合效果预览</text>
+        <text class="combination-desc">
+          {{getSoundLabel(alarm.sound)}} + {{getWakeMethodLabel(alarm.wakeMethod)}}
+        </text>
+      </view>
+    </view>
+
+    <!-- 其他设置 -->
+    <view class="form-section">
+      <text class="section-title">其他设置</text>
+      
+      <view class="setting-item">
+        <text class="setting-label">震动提醒</text>
+        <t-switch value="{{alarm.vibrate}}" bind:change="onVibrateChange" />
+      </view>
+      
+      <view class="setting-item">
+        <text class="setting-label">立即启用</text>
+        <t-switch value="{{alarm.isActive}}" bind:change="onActiveChange" />
+      </view>
+      
+      <view class="setting-item">
+        <text class="setting-label">备注</text>
+        <t-input
+          value="{{alarm.note}}"
+          placeholder="可选备注信息"
+          maxlength="50"
+          bind:change="onNoteInput"
+        />
+      </view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="action-buttons">
+      <t-button 
+        theme="primary" 
+        size="large" 
+        shape="round" 
+        bind:tap="saveAlarm"
+        loading="{{loading}}"
+      >
+        {{isEditMode ? '更新闹钟' : '添加闹钟'}}
+      </t-button>
+      
+      <t-button 
+        theme="default" 
+        size="large" 
+        shape="round" 
+        bind:tap="cancelEdit"
+        wx:if="{{!isEditMode}}"
+      >
+        取消
+      </t-button>
+      
+      <t-button 
+        theme="danger" 
+        size="large" 
+        shape="round" 
+        bind:tap="deleteAlarm"
+        wx:if="{{isEditMode}}"
+      >
+        删除闹钟
+      </t-button>
+    </view>
+  </view>
+</view>

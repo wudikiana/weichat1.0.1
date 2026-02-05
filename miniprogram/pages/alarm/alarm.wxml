@@ -1,0 +1,42 @@
+<!--alarm.wxml-->
+<view class="container">
+  <view class="alarm-list">
+    <view class="alarm-item" wx:for="{{alarms}}" wx:key="_id">
+      <view class="alarm-header">
+        <view class="alarm-time-info">
+          <text class="alarm-time">{{item.time}}</text>
+          <text class="alarm-repeat">{{item.repeat}}</text>
+        </view>
+        <t-switch value="{{item.enabled}}" bind:change="toggleAlarm" data-id="{{item._id}}" />
+      </view>
+      <view class="alarm-footer">
+        <view class="alarm-type">
+          <t-icon name="sound" size="16px" />
+          <text>{{item.type}}</text>
+        </view>
+        <view class="alarm-actions">
+          <text class="action-btn" bind:tap="editAlarm" data-id="{{item._id}}">编辑</text>
+          <text class="action-btn delete" bind:tap="deleteAlarm" data-id="{{item._id}}">删除</text>
+        </view>
+      </view>
+      <text class="alarm-note" wx:if="{{item.note}}">备注：{{item.note}}</text>
+    </view>
+  </view>
+
+  <view class="tip-section">
+    <text class="tip-title">铃声类型说明</text>
+    <text class="tip-item">• 轻柔唤醒：渐进式音量，适合浅睡眠阶段唤醒</text>
+    <text class="tip-item">• 自然唤醒：模拟自然声音，帮助自然醒来</text>
+    <text class="tip-item">• 智能唤醒：根据睡眠周期在最佳时机唤醒</text>
+  </view>
+
+  <view class="fab-wrapper">
+    <t-button theme="primary" size="large" shape="round" bind:tap="addAlarm">添加闹钟</t-button>
+  </view>
+
+  <view class="test-section">
+    <text class="test-title">音频测试</text>
+    <text class="test-desc">如果闹钟铃声无法播放，请点击下方按钮进行测试</text>
+    <t-button theme="default" size="medium" shape="round" bind:tap="goToTestPage">测试音频播放</t-button>
+  </view>
+</view>

@@ -1,0 +1,348 @@
+<!--device-location.wxml - 设备定位功能-->
+<view class="container">
+  <!-- 加载状态 -->
+  <view class="loading-overlay" wx:if="{{isLoading}}">
+    <t-loading size="48px" />
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 步骤指示器 -->
+  <view class="step-indicator">
+    <view class="step-item {{currentStep >= 1 ? 'active' : ''}}">
+      <view class="step-number">1</view>
+      <text class="step-label">上传佩戴前图片</text>
+    </view>
+    <view class="step-line"></view>
+    <view class="step-item {{currentStep >= 2 ? 'active' : ''}}">
+      <view class="step-number">2</view>
+      <text class="step-label">标记佩戴位置</text>
+    </view>
+    <view class="step-line"></view>
+    <view class="step-item {{currentStep >= 3 ? 'active' : ''}}">
+      <view class="step-number">3</view>
+      <text class="step-label">上传佩戴后图片</text>
+    </view>
+    <view class="step-line"></view>
+    <view class="step-item {{currentStep >= 4 ? 'active' : ''}}">
+      <view class="step-number">4</view>
+      <text class="step-label">查看分析结果</text>
+    </view>
+  </view>
+
+  <!-- 步骤1: 上传佩戴前图片 -->
+  <view class="step-content" wx:if="{{currentStep === 1}}">
+    <view class="section">
+      <text class="section-title">上传佩戴前图片</text>
+      <text class="section-desc">请上传佩戴设备前的耳朵图片，用于标记正确的佩戴位置</text>
+      
+      <view class="upload-area" bind:tap="choosePreWearImage">
+        <view class="upload-icon">
+          <t-icon name="add" size="48px" color="#0052D9" />
+        </view>
+        <text class="upload-text">点击上传图片</text>
+        <text class="upload-hint">支持 JPG、PNG 格式，最大 5MB</text>
+      </view>
+      
+      <view class="image-preview" wx:if="{{preWearImage}}">
+        <image src="{{preWearImage}}" mode="aspectFit" class="preview-image" />
+        <text class="preview-text">已上传佩戴前图片</text>
+      </view>
+    </view>
+
+    <view class="action-buttons">
+      <t-button theme="primary" size="large" bind:tap="choosePreWearImage" wx:if="{{!preWearImage}}">
+        上传图片
+      </t-button>
+      <t-button theme="primary" size="large" bind:tap="goToStep2" wx:if="{{preWearImage}}">
+        下一步：标记位置
+      </t-button>
+    </view>
+  </view>
+
+  <!-- 步骤2: 标记佩戴位置 -->
+  <view class="step-content" wx:if="{{currentStep === 2}}">
+    <view class="section">
+      <text class="section-title">标记佩戴位置</text>
+      <text class="section-desc">请在图片上绘制一条弧线，标记设备应该佩戴的位置</text>
+      
+        <!-- Canvas绘图区域 -->
+        <view class="canvas-container" style="width: 100%; height: 500rpx;">
+          <!-- 备用图片预览模式 -->
+          <view wx:if="{{!canvasReady || canvasError}}" style="width: 100%; height: 100%; position: relative;">
+            <image 
+              wx:if="{{preWearImage}}" 
+              src="{{preWearImage}}" 
+              mode="aspectFit" 
+              style="width: 100%; height: 100%;"
+            />
+            <view wx:else style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #f0f0f0;">
+              <t-icon name="image" size="64px" color="#cccccc" />
+              <text style="margin-top: 20rpx; color: #999999; font-size: 28rpx;">请先上传图片</text>
+            </view>
+            
+            <!-- 备用模式提示 -->
+            <view style="position: absolute; top: 20rpx; left: 20rpx; background: rgba(0, 82, 217, 0.8); color: white; padding: 10rpx 20rpx; border-radius: 8rpx; font-size: 24rpx;">
+              <text>备用图片预览模式</text>
+            </view>
+            
+            <!-- 标记提示 -->
+            <view style="position: absolute; bottom: 20rpx; left: 0; right: 0; text-align: center;">
+              <text style="color: #ff0000; font-size: 28rpx;">提示：Canvas不可用，使用图片预览模式</text>
+            </view>
+          </view>
+          
+          <!-- Canvas绘图模式 -->
+          <view wx:else style="width: 100%; height: 100%;">
+            <canvas 
+              canvas-id="marking-canvas"
+              id="marking-canvas"
+              class="marking-canvas"
+              style="width: 100%; height: 100%; border: 3px solid #ff0000; background: #f0f0f0;"
+              bind:touchstart="onCanvasTouchStart"
+              bind:touchmove="onCanvasTouchMove"
+              bind:touchend="onCanvasTouchEnd"
+            ></canvas>
+          </view>
+          
+          <!-- 添加图片预览作为备用（旧版兼容） -->
+          <image 
+            wx:if="{{preWearImage && !canvasReady}}" 
+            src="{{preWearImage}}" 
+            mode="aspectFit" 
+            style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 0; display: none;"
+          />
+          
+          <!-- 调试信息显示 -->
+          <view class="debug-info" wx:if="{{imageInfo}}" style="position: absolute; top: 10rpx; left: 10rpx; background: rgba(0,0,0,0.7); color: white; padding: 8rpx; border-radius: 8rpx; font-size: 20rpx; z-index: 10;">
+            <text>图片: {{imageInfo.width.toFixed(0)}}x{{imageInfo.height.toFixed(0)}}</text>
+            <text wx:if="{{canvasWidth && canvasHeight}}"> | Canvas: {{canvasWidth.toFixed(0)}}x{{canvasHeight.toFixed(0)}}</text>
+            <text wx:if="{{canvasError}}"> | 错误: {{canvasError}}</text>
+            <text wx:if="{{canvasReady}}"> | 就绪</text>
+            <text wx:if="{{useLegacyCanvas}}"> | 旧版API</text>
+            <text wx:if="{{useCanvas2D}}"> | Canvas 2D</text>
+          </view>
+          
+          <!-- Canvas边框测试 -->
+          <view style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 5;">
+            <view style="position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: #00ff00;"></view>
+            <view style="position: absolute; top: 0; left: 0; width: 3px; height: 100%; background: #00ff00;"></view>
+            <view style="position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: #00ff00;"></view>
+            <view style="position: absolute; top: 0; right: 0; width: 3px; height: 100%; background: #00ff00;"></view>
+          </view>
+          
+          <!-- 标记提示覆盖层 -->
+          <view class="canvas-overlay" wx:if="{{!isMarking}}">
+            <text class="canvas-hint">点击下方按钮开始标记</text>
+          </view>
+          <view class="canvas-marking-overlay" wx:if="{{isMarking}}">
+            <text class="canvas-marking-hint">请在图片上绘制佩戴位置弧线</text>
+          </view>
+        </view>
+      
+      <view class="marking-controls">
+        <t-button theme="primary" size="medium" bind:tap="startMarking" wx:if="{{!isMarking}}">
+          开始标记
+        </t-button>
+        <t-button theme="default" size="medium" bind:tap="endMarking" wx:if="{{isMarking}}">
+          结束标记
+        </t-button>
+        <t-button theme="warning" size="medium" bind:tap="clearMarking">
+          清除标记
+        </t-button>
+      </view>
+      
+      <view class="marking-info" wx:if="{{markingPoints.length > 0}}">
+        <text class="info-text">已标记 {{markingPoints.length}} 个点</text>
+        <text class="info-hint">标记点已自动保存</text>
+      </view>
+    </view>
+
+    <!-- 正确佩戴示意图 -->
+    <view class="section">
+      <text class="section-title">正确佩戴示意图</text>
+      <view class="reference-image" wx:if="{{referenceImage}}">
+        <image src="{{referenceImage}}" mode="aspectFit" class="reference-img" />
+        <text class="reference-text">参考图片：微信图片_20260126211741_11_3.jpg</text>
+      </view>
+      <view class="reference-placeholder" wx:else>
+        <t-icon name="image" size="64px" color="#cccccc" />
+        <text class="placeholder-text">加载参考图片中...</text>
+      </view>
+      
+      <view class="guide-steps">
+        <text class="step-item">1. 将设备轻轻放入耳道，确保贴合舒适</text>
+        <text class="step-item">2. 调整角度，使设备与耳道自然贴合</text>
+        <text class="step-item">3. 标记设备应该佩戴的弧线位置</text>
+      </view>
+    </view>
+
+    <view class="action-buttons">
+      <t-button theme="default" size="large" bind:tap="goToStep1">
+        上一步
+      </t-button>
+      <t-button theme="primary" size="large" bind:tap="goToStep3">
+        下一步：上传佩戴后图片
+      </t-button>
+      <t-button theme="warning" size="large" bind:tap="showCanvasDebugInfo">
+        调试信息
+      </t-button>
+    </view>
+  </view>
+
+  <!-- 步骤3: 上传佩戴后图片 -->
+  <view class="step-content" wx:if="{{currentStep === 3}}">
+    <view class="section">
+      <text class="section-title">上传佩戴后图片</text>
+      <text class="section-desc">请上传佩戴设备后的耳朵图片，系统将对比标记位置进行分析</text>
+      
+      <view class="upload-area" bind:tap="choosePostWearImage">
+        <view class="upload-icon">
+          <t-icon name="camera" size="48px" color="#0052D9" />
+        </view>
+        <text class="upload-text">点击上传佩戴后图片</text>
+        <text class="upload-hint">请确保拍摄角度与佩戴前图片一致</text>
+      </view>
+      
+      <view class="comparison-view" wx:if="{{preWearImage}}">
+        <view class="comparison-item">
+          <image src="{{preWearImage}}" mode="aspectFit" class="comparison-image" />
+          <text class="comparison-label">佩戴前</text>
+        </view>
+        <view class="comparison-arrow">
+          <t-icon name="arrow-right" size="24px" color="#0052D9" />
+        </view>
+        <view class="comparison-item">
+          <image src="{{postWearImage}}" mode="aspectFit" class="comparison-image" wx:if="{{postWearImage}}" />
+          <view class="comparison-placeholder" wx:else>
+            <t-icon name="image" size="32px" color="#cccccc" />
+          </view>
+          <text class="comparison-label">佩戴后</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="action-buttons">
+      <t-button theme="default" size="large" bind:tap="goToStep2">
+        上一步
+      </t-button>
+      <t-button theme="primary" size="large" bind:tap="choosePostWearImage" wx:if="{{!postWearImage}}">
+        上传佩戴后图片
+      </t-button>
+      <t-button theme="primary" size="large" bind:tap="analyzeWearPosition" wx:if="{{postWearImage}}">
+        开始分析
+      </t-button>
+    </view>
+  </view>
+
+  <!-- 步骤4: 查看分析结果 -->
+  <view class="step-content" wx:if="{{currentStep === 4}}">
+    <view class="section">
+      <text class="section-title">分析结果</text>
+      
+      <!-- 评分卡片 -->
+      <view class="score-card">
+        <view class="score-circle">
+          <text class="score-value">{{score}}</text>
+          <text class="score-label">分</text>
+        </view>
+        <view class="score-details">
+          <text class="score-title">佩戴位置评分</text>
+          <text class="score-desc" wx:if="{{analysisResult}}">
+            {{score >= 80 ? '佩戴位置正确' : score >= 60 ? '佩戴位置基本正确' : '需要调整佩戴位置'}}
+          </text>
+        </view>
+      </view>
+      
+      <!-- 详细分析 -->
+      <view class="analysis-details" wx:if="{{analysisResult}}">
+        <view class="detail-item">
+          <text class="detail-label">位置匹配度</text>
+          <view class="detail-value">
+            <t-progress percentage="{{analysisResult.positionMatch}}" />
+            <text class="detail-percent">{{analysisResult.positionMatch}}%</text>
+          </view>
+          <text class="detail-desc">偏差：{{analysisResult.details.positionDeviation}}</text>
+        </view>
+        
+        <view class="detail-item">
+          <text class="detail-label">角度匹配度</text>
+          <view class="detail-value">
+            <t-progress percentage="{{analysisResult.angleMatch}}" />
+            <text class="detail-percent">{{analysisResult.angleMatch}}%</text>
+          </view>
+          <text class="detail-desc">偏差：{{analysisResult.details.angleDeviation}}</text>
+        </view>
+        
+        <view class="detail-item">
+          <text class="detail-label">贴合度</text>
+          <view class="detail-value">
+            <t-progress percentage="{{analysisResult.fitMatch}}" />
+            <text class="detail-percent">{{analysisResult.fitMatch}}%</text>
+          </view>
+          <text class="detail-desc">等级：{{analysisResult.details.fitLevel}}</text>
+        </view>
+      </view>
+      
+      <!-- 改进建议 -->
+      <view class="suggestions" wx:if="{{analysisResult && analysisResult.details.suggestions.length > 0}}">
+        <text class="suggestions-title">改进建议</text>
+        <view class="suggestion-list">
+          <view class="suggestion-item" wx:for="{{analysisResult.details.suggestions}}" wx:key="index">
+            <t-icon name="lightning" size="16px" color="#0052D9" />
+            <text class="suggestion-text">{{item}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 定位统计 -->
+    <view class="section">
+      <text class="section-title">定位统计</text>
+      <view class="stats-grid">
+        <view class="stat-item">
+          <text class="stat-value {{stats.successRate >= 80 ? 'success' : stats.successRate >= 60 ? 'warning' : 'error'}}">
+            {{stats.successRate}}%
+          </text>
+          <text class="stat-label">成功率</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value success">{{stats.successCount}}</text>
+          <text class="stat-label">成功次数</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value warning">{{stats.failCount}}</text>
+          <text class="stat-label">失败次数</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value info">{{stats.totalTests}}</text>
+          <text class="stat-label">总测试次数</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 历史记录 -->
+    <view class="section" wx:if="{{locationHistory.length > 0}}">
+      <text class="section-title">历史记录</text>
+      <view class="history-list">
+        <view class="history-item" wx:for="{{locationHistory}}" wx:key="id" bind:tap="viewHistoryDetail" data-id="{{item.id}}">
+          <view class="history-date">{{item.date}}</view>
+          <view class="history-score">
+            <t-tag theme="{{item.score >= 80 ? 'success' : item.score >= 60 ? 'warning' : 'danger'}}" size="small">
+              {{item.score}}分
+            </t-tag>
+          </view>
+          <t-icon name="chevron-right" size="20px" color="#cccccc" />
+        </view>
+      </view>
+    </view>
+
+    <view class="action-buttons">
+      <t-button theme="default" size="large" bind:tap="restartProcess">
+        重新开始
+      </t-button>
+      <t-button theme="primary" size="large" bind:tap="shareResult">
+        分享结果
+      </t-button>
+    </view>
+  </view>
+</view>

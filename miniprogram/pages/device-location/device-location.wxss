@@ -1,0 +1,603 @@
+/* device-location.wxss - 设备定位功能样式 */
+.container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding: 32rpx;
+  padding-bottom: 160rpx;
+}
+
+/* 加载状态 */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #666666;
+  margin-top: 24rpx;
+}
+
+/* 步骤指示器 */
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 48rpx;
+  padding: 0 16rpx;
+}
+
+.step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.step-number {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  background: #e0e0e0;
+  color: #999999;
+  font-size: 28rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12rpx;
+  transition: all 0.3s ease;
+}
+
+.step-item.active .step-number {
+  background: #0052D9;
+  color: #ffffff;
+}
+
+.step-label {
+  font-size: 24rpx;
+  color: #999999;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.step-item.active .step-label {
+  color: #0052D9;
+  font-weight: 500;
+}
+
+.step-line {
+  flex: 1;
+  height: 4rpx;
+  background: #e0e0e0;
+  margin: 0 16rpx;
+  transition: all 0.3s ease;
+}
+
+.step-item.active ~ .step-line {
+  background: #0052D9;
+}
+
+/* 步骤内容 */
+.step-content {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.08);
+}
+
+.section {
+  margin-bottom: 48rpx;
+}
+
+.section:last-child {
+  margin-bottom: 0;
+}
+
+.section-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 16rpx;
+  display: block;
+}
+
+.section-desc {
+  font-size: 28rpx;
+  color: #666666;
+  line-height: 1.5;
+  margin-bottom: 32rpx;
+  display: block;
+}
+
+/* 上传区域 */
+.upload-area {
+  border: 2rpx dashed #0052D9;
+  border-radius: 16rpx;
+  padding: 64rpx 32rpx;
+  text-align: center;
+  background: #f0f7ff;
+  margin-bottom: 32rpx;
+}
+
+.upload-icon {
+  margin-bottom: 24rpx;
+}
+
+.upload-text {
+  font-size: 32rpx;
+  color: #0052D9;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.upload-hint {
+  font-size: 24rpx;
+  color: #999999;
+  display: block;
+}
+
+/* 图片预览 */
+.image-preview {
+  text-align: center;
+}
+
+.preview-image {
+  width: 100%;
+  height: 400rpx;
+  border-radius: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.preview-text {
+  font-size: 28rpx;
+  color: #00A870;
+}
+
+/* Canvas绘图区域 */
+.canvas-container {
+  position: relative;
+  width: 100%;
+  height: 500rpx;
+  background: #f5f5f5;
+  border-radius: 16rpx;
+  margin-bottom: 32rpx;
+  overflow: hidden;
+}
+
+.marking-canvas {
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  position: relative;
+}
+
+.canvas-image-preview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f5;
+}
+
+.preview-image-in-canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.canvas-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.canvas-hint {
+  font-size: 32rpx;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+/* 标记时的覆盖层 */
+.canvas-marking-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 82, 217, 0.1);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  z-index: 2;
+  padding-top: 32rpx;
+}
+
+.canvas-marking-hint {
+  font-size: 28rpx;
+  color: #0052D9;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 16rpx 32rpx;
+  border-radius: 8rpx;
+  border: 2rpx solid #0052D9;
+}
+
+/* 标记控制 */
+.marking-controls {
+  display: flex;
+  gap: 24rpx;
+  margin-bottom: 32rpx;
+  justify-content: center;
+}
+
+.marking-info {
+  text-align: center;
+  padding: 24rpx;
+  background: #E6F9F0;
+  border-radius: 16rpx;
+}
+
+.info-text {
+  font-size: 28rpx;
+  color: #00A870;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.info-hint {
+  font-size: 24rpx;
+  color: #666666;
+  display: block;
+}
+
+/* 参考图片 */
+.reference-image {
+  text-align: center;
+  margin-bottom: 32rpx;
+}
+
+.reference-img {
+  width: 100%;
+  height: 400rpx;
+  border-radius: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.reference-text {
+  font-size: 24rpx;
+  color: #666666;
+}
+
+.reference-placeholder {
+  width: 100%;
+  height: 400rpx;
+  background: #f5f5f5;
+  border-radius: 16rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 32rpx;
+}
+
+.placeholder-text {
+  font-size: 28rpx;
+  color: #999999;
+  margin-top: 16rpx;
+}
+
+/* 指导步骤 */
+.guide-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  padding: 24rpx;
+  background: #f9f9f9;
+  border-radius: 16rpx;
+}
+
+.step-item {
+  font-size: 28rpx;
+  color: #666666;
+  line-height: 1.6;
+}
+
+/* 对比视图 */
+.comparison-view {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 32rpx;
+}
+
+.comparison-item {
+  flex: 1;
+  text-align: center;
+}
+
+.comparison-image {
+  width: 100%;
+  height: 300rpx;
+  border-radius: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.comparison-placeholder {
+  width: 100%;
+  height: 300rpx;
+  background: #f5f5f5;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16rpx;
+}
+
+.comparison-label {
+  font-size: 28rpx;
+  color: #666666;
+}
+
+.comparison-arrow {
+  padding: 0 32rpx;
+}
+
+/* 评分卡片 */
+.score-card {
+  display: flex;
+  align-items: center;
+  padding: 48rpx 32rpx;
+  background: linear-gradient(135deg, #0052D9, #0088FF);
+  border-radius: 24rpx;
+  margin-bottom: 48rpx;
+}
+
+.score-circle {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-right: 32rpx;
+}
+
+.score-value {
+  font-size: 64rpx;
+  font-weight: bold;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.score-label {
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 8rpx;
+}
+
+.score-details {
+  flex: 1;
+}
+
+.score-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #ffffff;
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.score-desc {
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.9);
+  display: block;
+}
+
+/* 详细分析 */
+.analysis-details {
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
+  margin-bottom: 48rpx;
+}
+
+.detail-item {
+  background: #f9f9f9;
+  border-radius: 16rpx;
+  padding: 32rpx;
+}
+
+.detail-label {
+  font-size: 28rpx;
+  color: #1a1a1a;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.detail-value {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  margin-bottom: 12rpx;
+}
+
+.detail-percent {
+  font-size: 28rpx;
+  color: #0052D9;
+  font-weight: 600;
+  min-width: 80rpx;
+}
+
+.detail-desc {
+  font-size: 24rpx;
+  color: #666666;
+}
+
+/* 改进建议 */
+.suggestions {
+  background: #FFF7E6;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  margin-bottom: 48rpx;
+}
+
+.suggestions-title {
+  font-size: 28rpx;
+  color: #1a1a1a;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 24rpx;
+}
+
+.suggestion-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+}
+
+.suggestion-text {
+  flex: 1;
+  font-size: 26rpx;
+  color: #666666;
+  line-height: 1.5;
+}
+
+/* 统计网格 */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24rpx;
+  margin-top: 24rpx;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 32rpx 24rpx;
+  background: #f9f9f9;
+  border-radius: 16rpx;
+}
+
+.stat-value {
+  font-size: 48rpx;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.stat-value.success {
+  color: #00A870;
+}
+
+.stat-value.warning {
+  color: #FF8A00;
+}
+
+.stat-value.error {
+  color: #E34D59;
+}
+
+.stat-value.info {
+  color: #0052D9;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+/* 历史记录 */
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  margin-top: 24rpx;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx;
+  background: #f9f9f9;
+  border-radius: 16rpx;
+}
+
+.history-date {
+  font-size: 28rpx;
+  color: #1a1a1a;
+  flex: 1;
+}
+
+.history-score {
+  margin-right: 24rpx;
+}
+
+/* 操作按钮 */
+.action-buttons {
+  display: flex;
+  gap: 24rpx;
+  margin-top: 48rpx;
+}
+
+.action-buttons t-button {
+  flex: 1;
+}
+
+/* 响应式调整 */
+@media (max-width: 750rpx) {
+  .step-indicator {
+    padding: 0;
+  }
+  
+  .step-label {
+    font-size: 22rpx;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .comparison-view {
+    flex-direction: column;
+    gap: 32rpx;
+  }
+  
+  .comparison-arrow {
+    transform: rotate(90deg);
+    padding: 16rpx 0;
+  }
+}

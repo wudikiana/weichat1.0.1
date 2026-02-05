@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "闹钟管理",
+  "usingComponents": {
+    "t-switch": "tdesign-miniprogram/switch/switch",
+    "t-icon": "tdesign-miniprogram/icon/icon",
+    "t-button": "tdesign-miniprogram/button/button"
+  }
+}
+

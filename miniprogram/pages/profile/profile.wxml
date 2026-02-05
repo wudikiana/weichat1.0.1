@@ -1,0 +1,96 @@
+<!--profile.wxml-->
+<view class="container">
+  <!-- 未登录状态 -->
+  <view class="login-section" wx:if="{{!isLoggedIn}}">
+    <view class="login-card">
+      <view class="login-title">欢迎使用耳健康</view>
+      <view class="login-subtitle">登录后享受完整功能</view>
+      <view class="login-buttons">
+        <t-button theme="primary" size="large" bind:tap="login" class="login-btn">
+          微信一键登录
+        </t-button>
+        <t-button theme="light" size="large" bind:tap="guestLogin" class="guest-btn">
+          游客模式
+        </t-button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 已登录状态 -->
+  <block wx:else>
+    <!-- 顶部个人信息卡片 -->
+    <view class="header-section">
+      <view class="user-header">
+        <t-avatar size="large" image="{{userInfo.avatarUrl || '/assets/images/default-avatar.png'}}" />
+        <view class="user-info">
+          <text class="username">{{userInfo.nickName || '用户昵称'}}</text>
+          <text class="user-detail">{{userInfo.age || 28}}岁 · {{userInfo.gender || '男'}} · 身高{{userInfo.height || 170}}cm · 体重{{userInfo.weight || 65}}kg</text>
+        </view>
+        <t-icon name="edit" size="24px" color="#ffffff" bind:tap="navigateToEdit" />
+      </view>
+
+      <!-- 健康数据概览 -->
+      <view class="health-overview">
+        <text class="overview-label">最近一次健康评测</text>
+        <view class="overview-content">
+          <view class="overview-left">
+            <text class="overview-status">{{healthData.status || '未评测'}}</text>
+            <text class="overview-date">{{healthData.date || '暂无数据'}}</text>
+          </view>
+          <view class="overview-right">
+            <view class="score-item">
+              <text class="score-label">焦虑(SAS)</text>
+              <text class="score-value-small">{{healthData.sasScore || 0}}分</text>
+            </view>
+            <view class="score-item">
+              <text class="score-label">抑郁(SDS)</text>
+              <text class="score-value-small">{{healthData.sdsScore || 0}}分</text>
+            </view>
+            <view class="score-divider"></view>
+            <view class="total-score">
+              <text class="score-label">综合评分</text>
+              <text class="score-value">{{healthData.score || 0}}分</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 功能列表 -->
+    <view class="function-list">
+      <t-cell-group>
+        <t-cell
+          title="蓝牙设备连接"
+          note="管理已连接的设备"
+          left-icon="bluetooth"
+          arrow
+          bind:click="navigateToBluetooth"
+        >
+          <view slot="note" class="cell-note">
+            <text>已连接 {{deviceCount}} 台</text>
+          </view>
+        </t-cell>
+
+        <t-cell
+          title="健康评测"
+          note="SAS/SDS量表测评"
+          left-icon="chart-bar"
+          arrow
+          bind:click="navigateToHealthAssessment"
+        />
+
+        <t-cell
+          title="建议反馈"
+          note="提交问题或建议"
+          left-icon="chat"
+          arrow
+          bind:click="navigateToFeedback"
+        />
+      </t-cell-group>
+
+      <view class="logout-section">
+        <t-button theme="light" size="large" bind:tap="logout">退出登录</t-button>
+      </view>
+    </view>
+  </block>
+</view>

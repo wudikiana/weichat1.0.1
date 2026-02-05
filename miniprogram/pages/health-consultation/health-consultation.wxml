@@ -1,0 +1,21 @@
+<!--health-consultation.wxml-->
+<view class="container">
+  <!-- 功能入口 -->
+  <view class="function-entries">
+    <view class="entry-card doctors" bind:tap="navigateToDoctors">
+      <view class="entry-icon">
+        <t-icon name="user-circle" size="24px" />
+      </view>
+      <text class="entry-title">医院医生</text>
+      <text class="entry-desc">在线咨询与预约</text>
+    </view>
+    <view class="entry-card knowledge" bind:tap="navigateToKnowledge">
+      <view class="entry-icon">
+        <t-icon name="article" size="24px" />
+      </view>
+      <text class="entry-title">健康知识库</text>
+      <text class="entry-desc">专业健康知识</text>
+    </view>
+  </view>
+</view>
+

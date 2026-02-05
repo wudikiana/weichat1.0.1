@@ -1,0 +1,110 @@
+/* doctors.wxss */
+.container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding: 32rpx;
+}
+
+.filter-tabs {
+  background: #ffffff;
+  padding: 24rpx 0;
+  margin-bottom: 24rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.tabs-scroll {
+  white-space: nowrap;
+}
+
+.tabs-wrapper {
+  display: flex;
+  gap: 16rpx;
+  padding: 0 32rpx;
+}
+
+.doctor-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.doctor-card {
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  display: flex;
+  gap: 24rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
+}
+
+.doctor-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.doctor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8rpx;
+}
+
+.doctor-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.doctor-hospital {
+  font-size: 28rpx;
+  color: #999999;
+}
+
+.doctor-rating {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+}
+
+.rating-score {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.rating-count {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.doctor-title {
+  font-size: 28rpx;
+  color: #666666;
+  margin-bottom: 8rpx;
+}
+
+.doctor-desc {
+  font-size: 24rpx;
+  color: #999999;
+  margin-bottom: 16rpx;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.doctor-tags {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.doctor-actions {
+  display: flex;
+  gap: 16rpx;
+}
+

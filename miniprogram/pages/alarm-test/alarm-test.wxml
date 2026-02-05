@@ -1,0 +1,121 @@
+<view class="container">
+  <view class="section">
+    <text class="section-title">闹钟测试</text>
+    <text class="section-desc">测试音频播放功能，验证修复效果</text>
+  </view>
+
+  <view class="card">
+    <view class="form-item">
+      <text class="label">选择铃声：</text>
+      <picker 
+        range="{{soundTypes}}" 
+        range-key="label" 
+        value="{{selectedSoundIndex}}" 
+        bindchange="onSoundChange"
+      >
+        <view class="picker">
+          {{getSoundLabel(selectedSound)}}
+          <text class="picker-arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <text class="label">选择唤醒方法：</text>
+      <picker 
+        range="{{wakeMethods}}" 
+        range-key="label" 
+        value="{{selectedMethodIndex}}" 
+        bindchange="onMethodChange"
+      >
+        <view class="picker">
+          {{getMethodLabel(selectedMethod)}}
+          <text class="picker-arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <text class="label">音量：{{volume}}%</text>
+      <slider 
+        value="{{volume}}" 
+        min="0" 
+        max="100" 
+        step="5" 
+        show-value 
+        bindchange="onVolumeChange"
+      />
+    </view>
+  </view>
+
+  <view class="card">
+    <text class="card-title">测试操作</text>
+    
+    <view class="button-group">
+      <button 
+        class="button button-primary" 
+        bindtap="testSingleSound" 
+        disabled="{{isTesting}}"
+      >
+        {{isTesting ? '测试中...' : '测试单个铃声'}}
+      </button>
+      
+      <button 
+        class="button button-secondary" 
+        bindtap="testFullAlarm" 
+        disabled="{{isTesting}}"
+      >
+        {{isTesting ? '测试中...' : '测试完整闹钟'}}
+      </button>
+      
+      <button 
+        class="button button-warning" 
+        bindtap="stopAllSounds"
+      >
+        停止所有声音
+      </button>
+    </view>
+
+    <view class="status">
+      <text class="status-label">状态：</text>
+      <text class="status-value {{testStatus === '播放成功' ? 'success' : testStatus === '播放失败' ? 'error' : ''}}">
+        {{testStatus || '等待测试'}}
+      </text>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="log-header">
+      <text class="card-title">测试日志</text>
+      <view class="log-actions">
+        <button class="button button-small" bindtap="clearLogs">清除</button>
+        <button class="button button-small" bindtap="copyLogs">复制</button>
+      </view>
+    </view>
+    
+    <view class="log-container">
+      <scroll-view class="log-scroll" scroll-y>
+        <view class="log-list">
+          <block wx:for="{{testLogs}}" wx:key="index">
+            <view class="log-item">
+              <text class="log-time">{{item}}</text>
+            </view>
+          </block>
+          <view wx:if="{{testLogs.length === 0}}" class="empty-log">
+            <text>暂无日志，开始测试吧！</text>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <view class="footer">
+    <text class="footer-text">问题修复说明：</text>
+    <text class="footer-desc">
+      1. 修复了音频播放错误（errCode:602）<br/>
+      2. 使用云存储临时链接代替cloud://路径<br/>
+      3. 添加了本地备用音频源<br/>
+      4. 改进了错误处理和日志记录
+    </text>
+  </view>
+</view>

@@ -1,0 +1,84 @@
+<!--sleep-plan.wxml-->
+<view class="container">
+  <!-- 今日睡眠目标 -->
+  <view class="sleep-target-card">
+    <text class="target-label">今日睡眠目标</text>
+    <view class="target-content">
+      <view class="target-left">
+        <text class="target-hours">{{sleepTarget.hours}}</text>
+        <text class="target-unit">小时</text>
+      </view>
+      <view class="target-right">
+        <text class="target-label-small">就寝时间</text>
+        <text class="target-time">{{sleepTarget.bedtime}}</text>
+      </view>
+    </view>
+    <view class="target-footer">
+      <view>
+        <text class="target-label-small">起床时间</text>
+        <text class="target-time-small">{{sleepTarget.wakeTime}}</text>
+      </view>
+      <view>
+        <text class="target-label-small">剩余时间</text>
+        <text class="target-time-small">{{sleepTarget.remainingTime}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 快速操作 -->
+  <view class="quick-actions">
+    <view class="action-item" bind:tap="navigateToAlarm">
+      <view class="action-icon alarm">
+        <t-icon name="time" size="20px" />
+      </view>
+      <view class="action-content">
+        <text class="action-title">闹钟</text>
+        <text class="action-desc">{{alarmCount}}个闹钟</text>
+      </view>
+    </view>
+    <view class="action-item" bind:tap="navigateToStatistics">
+      <view class="action-icon statistics">
+        <t-icon name="chart-bar" size="20px" />
+      </view>
+      <view class="action-content">
+        <text class="action-title">数据统计</text>
+        <text class="action-desc">查看详情</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 本周睡眠数据 -->
+  <view class="section">
+    <text class="section-title">本周睡眠数据</text>
+    <view class="chart-container">
+      <view class="chart-bars">
+        <view class="chart-bar" wx:for="{{weekData}}" wx:key="day" style="height: {{item.height}}%">
+          <view class="bar {{item.isToday ? 'active' : ''}}"></view>
+        </view>
+      </view>
+      <view class="chart-labels">
+        <text wx:for="{{weekData}}" wx:key="day" class="chart-label">{{item.label}}</text>
+      </view>
+    </view>
+    <view class="chart-footer">
+      <view>
+        <text class="footer-label">平均睡眠时长</text>
+        <text class="footer-value">{{averageSleep}}小时</text>
+      </view>
+      <view>
+        <text class="footer-label">睡眠质量</text>
+        <text class="footer-value">{{sleepQuality}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 睡眠建议 -->
+  <view class="suggestion-card">
+    <t-icon name="info-circle" size="20px" color="#0052D9" />
+    <view class="suggestion-content">
+      <text class="suggestion-title">睡眠建议</text>
+      <text class="suggestion-text">{{suggestion}}</text>
+    </view>
+  </view>
+</view>
+

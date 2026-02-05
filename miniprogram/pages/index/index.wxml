@@ -1,0 +1,72 @@
+<!--index.wxml-->
+<view class="container">
+  <!-- 顶部用户信息区域 -->
+  <view class="header-section">
+    <view class="user-info">
+      <t-avatar size="large" image="{{userInfo.avatarUrl || '/assets/images/default-avatar.png'}}" />
+      <view class="user-details">
+        <text class="greeting">{{greeting}}</text>
+        <text class="username">{{userInfo.nickName || '用户昵称'}}</text>
+      </view>
+      <t-icon name="chevron-right" size="24px" color="#ffffff" bind:tap="navigateToProfile" />
+    </view>
+  </view>
+
+  <!-- 功能入口卡片区域 -->
+  <view class="function-cards">
+    <view class="card-item" bind:tap="navigateToSleepPlan">
+      <view class="card-icon sleep">
+        <t-icon name="time" size="24px" />
+      </view>
+      <view class="card-content">
+        <text class="card-title">睡眠计划</text>
+        <text class="card-desc">管理您的睡眠时间和质量</text>
+      </view>
+      <t-icon name="chevron-right" size="20px" color="#999" />
+    </view>
+
+    <view class="card-item" bind:tap="navigateToHealthConsultation">
+      <view class="card-icon consultation">
+        <t-icon name="service" size="24px" />
+      </view>
+      <view class="card-content">
+        <text class="card-title">健康咨询</text>
+        <text class="card-desc">专业医生在线咨询与预约</text>
+      </view>
+      <t-icon name="chevron-right" size="20px" color="#999" />
+    </view>
+
+    <view class="card-item" bind:tap="navigateToEarScan">
+      <view class="card-icon scan">
+        <t-icon name="image" size="24px" />
+      </view>
+      <view class="card-content">
+        <text class="card-title">耳朵扫描分析</text>
+        <text class="card-desc">AI智能分析耳部健康状况</text>
+      </view>
+      <t-icon name="chevron-right" size="20px" color="#999" />
+    </view>
+
+    <view class="card-item" bind:tap="navigateToDeviceLocation">
+      <view class="card-icon location">
+        <t-icon name="location" size="24px" />
+      </view>
+      <view class="card-content">
+        <text class="card-title">设备定位</text>
+        <text class="card-desc">智能检测设备佩戴位置</text>
+      </view>
+      <t-icon name="chevron-right" size="20px" color="#999" />
+    </view>
+
+    <view class="card-item" bind:tap="navigateToProfile">
+      <view class="card-icon profile">
+        <t-icon name="user" size="24px" />
+      </view>
+      <view class="card-content">
+        <text class="card-title">个人中心</text>
+        <text class="card-desc">查看个人信息和健康数据</text>
+      </view>
+      <t-icon name="chevron-right" size="20px" color="#999" />
+    </view>
+  </view>
+</view>

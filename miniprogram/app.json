@@ -1,0 +1,96 @@
+
+{"cloud": true,
+  "pages": [
+    "pages/index/index",
+    "pages/profile/profile",
+    "pages/profile-edit/profile-edit",
+    "pages/bluetooth/bluetooth",
+    "pages/health-assessment/health-assessment",
+    "pages/feedback/feedback",
+    "pages/sleep-plan/sleep-plan",
+    "pages/sleep-settings/sleep-settings",
+    "pages/alarm/alarm",
+    "pages/sleep-statistics/sleep-statistics",
+    "pages/health-consultation/health-consultation",
+    "pages/doctors/doctors",
+    "pages/knowledge/knowledge",
+    "pages/alarm-edit/alarm-edit",
+    "pages/ear-scan/ear-scan",
+    "pages/ear-scan-result/ear-scan-result",
+    "pages/device-location/device-location",
+    "pages/alarm-test/alarm-test"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "智能耳健康助手",
+    "navigationBarBackgroundColor": "#ffffff",
+    "backgroundColor": "#f5f5f5"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#0052D9",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "assets/icons/home.png",
+        "selectedIconPath": "assets/icons/home-active.png"
+      },
+      {
+        "pagePath": "pages/sleep-plan/sleep-plan",
+        "text": "睡眠",
+        "iconPath": "assets/icons/sleep.png",
+        "selectedIconPath": "assets/icons/sleep-active.png"
+      },
+      {
+        "pagePath": "pages/health-consultation/health-consultation",
+        "text": "咨询",
+        "iconPath": "assets/icons/consultation.png",
+        "selectedIconPath": "assets/icons/consultation-active.png"
+      },
+      {
+        "pagePath": "pages/ear-scan/ear-scan",
+        "text": "扫描",
+        "iconPath": "assets/icons/scan.png",
+        "selectedIconPath": "assets/icons/scan-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "assets/icons/profile.png",
+        "selectedIconPath": "assets/icons/profile-active.png"
+      }
+    ]
+  },
+  "componentFramework": "glass-easel",
+  "lazyCodeLoading": "requiredComponents",
+  "usingComponents": {
+    "t-button": "tdesign-miniprogram/button/button",
+    "t-cell": "tdesign-miniprogram/cell/cell",
+    "t-cell-group": "tdesign-miniprogram/cell-group/cell-group",
+    "t-icon": "tdesign-miniprogram/icon/icon",
+    "t-avatar": "tdesign-miniprogram/avatar/avatar",
+    "t-tag": "tdesign-miniprogram/tag/tag",
+    "t-grid": "tdesign-miniprogram/grid/grid",
+    "t-grid-item": "tdesign-miniprogram/grid-item/grid-item",
+    "t-switch": "tdesign-miniprogram/switch/switch",
+    "t-input": "tdesign-miniprogram/input/input",
+    "t-textarea": "tdesign-miniprogram/textarea/textarea",
+    "t-upload": "tdesign-miniprogram/upload/upload",
+    "t-progress": "tdesign-miniprogram/progress/progress",
+    "t-divider": "tdesign-miniprogram/divider/divider",
+    "t-empty": "tdesign-miniprogram/empty/empty",
+    "t-loading": "tdesign-miniprogram/loading/loading",
+    "t-dialog": "tdesign-miniprogram/dialog/dialog",
+    "t-toast": "tdesign-miniprogram/toast/toast",
+    "t-search": "tdesign-miniprogram/search/search",
+    "t-picker": "tdesign-miniprogram/picker/picker",
+    "t-slider": "tdesign-miniprogram/slider/slider",
+    "t-radio": "tdesign-miniprogram/radio/radio",
+    "t-radio-group": "tdesign-miniprogram/radio-group/radio-group",
+    "t-checkbox": "tdesign-miniprogram/checkbox/checkbox",
+    "t-checkbox-group": "tdesign-miniprogram/checkbox-group/checkbox-group"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "睡眠数据统计",
+  "usingComponents": {
+    "t-progress": "tdesign-miniprogram/progress/progress",
+    "t-tag": "tdesign-miniprogram/tag/tag",
+    "t-icon": "tdesign-miniprogram/icon/icon"
+  }
+}
+

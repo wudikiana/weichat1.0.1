@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "耳朵扫描分析",
+  "usingComponents": {
+    "t-icon": "tdesign-miniprogram/icon/icon",
+    "t-button": "tdesign-miniprogram/button/button",
+    "t-tag": "tdesign-miniprogram/tag/tag"
+  }
+}
+

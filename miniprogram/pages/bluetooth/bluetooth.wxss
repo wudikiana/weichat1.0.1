@@ -1,0 +1,422 @@
+/* bluetooth.wxss */
+.container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding: 32rpx;
+  padding-bottom: 120rpx;
+}
+
+.section {
+  margin-bottom: 32rpx;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.section-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #999999;
+}
+
+.device-card {
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
+}
+
+.device-card.connected {
+  border: 2rpx solid #0052D9;
+}
+
+.device-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32rpx;
+  padding-bottom: 32rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.device-info {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  flex: 1;
+}
+
+.device-icon {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 16rpx;
+  background: #E6F4FF;
+  color: #0052D9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.device-icon.bluetooth-connected {
+  background: #E6F4FF;
+}
+
+.device-icon.bluetooth-strong {
+  background: #E6F4FF;
+}
+
+.device-icon.bluetooth-medium {
+  background: #FFF7E6;
+  color: #FA8C16;
+}
+
+.device-icon.bluetooth-weak {
+  background: #FFF1F0;
+  color: #F5222D;
+}
+
+.device-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  flex: 1;
+}
+
+.device-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.device-status-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.device-status {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.status-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  background: #cccccc;
+}
+
+.status-dot.connected {
+  background: #00A870;
+}
+
+.status-text {
+  font-size: 24rpx;
+  color: #00A870;
+}
+
+/* 挡位控制样式 */
+.power-control {
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  margin-bottom: 32rpx;
+}
+
+.control-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.control-label {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.power-description {
+  font-size: 24rpx;
+  color: #0052D9;
+  background: #E6F4FF;
+  padding: 4rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+.power-display-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24rpx;
+}
+
+.power-display {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  background: #ffffff;
+  padding: 24rpx 80rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 82, 217, 0.15);
+}
+
+.power-value {
+  font-size: 80rpx;
+  font-weight: bold;
+  color: #0052D9;
+  line-height: 1;
+}
+
+.power-unit {
+  font-size: 32rpx;
+  color: #999999;
+  margin-left: 8rpx;
+  margin-top: 16rpx;
+}
+
+/* 滑块样式 */
+.power-slider {
+  position: relative;
+  height: 8rpx;
+  background: #e0e0e0;
+  border-radius: 4rpx;
+  margin: 32rpx 16rpx;
+}
+
+.power-slider-track {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #0052D9, #1890FF);
+  border-radius: 4rpx;
+  width: var(--progress);
+  transition: width 0.3s ease;
+}
+
+.power-slider-thumb {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32rpx;
+  height: 32rpx;
+  background: #ffffff;
+  border: 4rpx solid #0052D9;
+  border-radius: 50%;
+  box-shadow: 0 2rpx 8rpx rgba(0, 82, 217, 0.3);
+}
+
+.power-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24rpx;
+  margin-bottom: 24rpx;
+}
+
+.power-levels {
+  display: flex;
+  justify-content: space-between;
+  gap: 8rpx;
+  flex: 1;
+  max-width: 400rpx;
+}
+
+.power-level-item {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 8rpx;
+  background: #ffffff;
+  border: 2rpx solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+  color: #999999;
+  transition: all 0.3s ease;
+}
+
+.power-level-item.active {
+  background: #0052D9;
+  border-color: #0052D9;
+  color: #ffffff;
+}
+
+.power-level-item.current {
+  transform: scale(1.1);
+  box-shadow: 0 4rpx 12rpx rgba(0, 82, 217, 0.4);
+}
+
+.power-tips {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 16rpx;
+  border-top: 1rpx solid #e0e0e0;
+}
+
+.power-tip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rpx;
+}
+
+.power-tip .tip-label {
+  font-size: 22rpx;
+  color: #666666;
+}
+
+.power-tip .tip-range {
+  font-size: 20rpx;
+  color: #999999;
+}
+
+.device-actions {
+  display: flex;
+  gap: 24rpx;
+}
+
+/* 设备列表 */
+.device-item {
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
+}
+
+.history-status {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.empty-tip {
+  text-align: center;
+  padding: 64rpx 32rpx;
+  color: #999999;
+}
+
+.empty-icon {
+  margin-bottom: 16rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.empty-hint {
+  font-size: 24rpx;
+  color: #cccccc;
+}
+
+/* 历史记录 */
+.history-list {
+  background: #ffffff;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.history-item:last-child {
+  border-bottom: none;
+}
+
+.history-info {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  flex: 1;
+}
+
+.history-icon {
+  width: 64rpx;
+  height: 64rpx;
+  background: #f5f5f5;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.history-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.history-name {
+  font-size: 28rpx;
+  color: #333333;
+}
+
+.history-meta {
+  font-size: 22rpx;
+  color: #999999;
+}
+
+.history-actions {
+  display: flex;
+  gap: 12rpx;
+}
+
+/* 使用说明 */
+.usage-tips {
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+}
+
+.tip-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.tip-item:last-child {
+  border-bottom: none;
+}
+
+.tip-num {
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  background: #0052D9;
+  color: #ffffff;
+  font-size: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tip-text {
+  font-size: 26rpx;
+  color: #666666;
+  line-height: 1.5;
+}

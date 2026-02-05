@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "健康评测",
+  "usingComponents": {
+    "t-button": "tdesign-miniprogram/button/button",
+    "t-progress": "tdesign-miniprogram/progress/progress",
+    "t-cell": "tdesign-miniprogram/cell/cell",
+    "t-cell-group": "tdesign-miniprogram/cell-group/cell-group",
+    "t-tag": "tdesign-miniprogram/tag/tag"
+  }
+}
+

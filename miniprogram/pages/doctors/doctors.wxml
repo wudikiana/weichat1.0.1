@@ -1,0 +1,51 @@
+<!--doctors.wxml-->
+<view class="container">
+  <!-- 筛选标签 -->
+  <view class="filter-tabs">
+    <scroll-view class="tabs-scroll" scroll-x>
+      <view class="tabs-wrapper">
+        <t-tag 
+          wx:for="{{categories}}" 
+          wx:key="id"
+          theme="{{selectedCategory === item.id ? 'primary' : 'default'}}"
+          size="medium"
+          bind:tap="selectCategory"
+          data-id="{{item.id}}"
+        >
+          {{item.name}}
+        </t-tag>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 医生列表 -->
+  <view class="doctor-list">
+    <view class="doctor-card" wx:for="{{doctors}}" wx:key="id">
+      <t-avatar size="large" image="{{item.avatar || '/assets/images/doctor-actions-avatar.png'}}" />
+      <view class="doctor-info">
+        <view class="doctor-header">
+          <view>
+            <text class="doctor-name">{{item.name}}</text>
+            <text class="doctor-hospital">{{item.hospital}} · {{item.department}}</text>
+          </view>
+          <view class="doctor-rating">
+            <t-icon name="star-filled" size="16px" color="#FFA500" />
+            <text class="rating-score">{{item.rating}}</text>
+            <text class="rating-count">({{item.reviewCount}})</text>
+          </view>
+        </view>
+        <text class="doctor-title">{{item.title}} · {{item.experience}}年临床经验</text>
+        <text class="doctor-desc">{{item.description}}</text>
+        <view class="doctor-tags">
+          <t-tag theme="primary" size="small" wx:if="{{item.bookable}}">可预约</t-tag>
+          <t-tag theme="success" size="small" wx:if="{{item.online}}">在线咨询</t-tag>
+        </view>
+        <view class="doctor-actions">
+          <t-button theme="primary" size="small" bind:tap="consultDoctor" data-id="{{item.id}}">立即咨询</t-button>
+          <t-button theme="default" size="small" bind:tap="bookDoctor" data-id="{{item.id}}">预约挂号</t-button>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+

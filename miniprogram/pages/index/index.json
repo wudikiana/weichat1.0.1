@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "智能耳健康助手",
+  "usingComponents": {
+    "t-avatar": "tdesign-miniprogram/avatar/avatar",
+    "t-icon": "tdesign-miniprogram/icon/icon"
+  }
+}

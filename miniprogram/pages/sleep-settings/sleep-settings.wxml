@@ -1,0 +1,65 @@
+<!--sleep-settings.wxml-->
+<view class="container">
+  <view class="section">
+    <text class="section-title">每日睡眠目标</text>
+    <view class="target-setting">
+      <text class="setting-label">目标时长</text>
+      <view class="target-controls">
+        <t-button theme="default" size="small" shape="circle" bind:tap="decreaseHours">-</t-button>
+        <text class="target-value">{{sleepTarget.hours}}</text>
+        <text class="target-unit">小时</text>
+        <t-button theme="default" size="small" shape="circle" bind:tap="increaseHours">+</t-button>
+      </view>
+    </view>
+  </view>
+
+  <view class="section">
+    <text class="section-title">就寝时间</text>
+    <view class="time-setting">
+      <view class="time-info">
+        <text class="time-label">建议时间</text>
+        <text class="time-value">{{sleepTarget.bedtime}}</text>
+      </view>
+      <t-button theme="primary" size="small" bind:tap="setBedtime">修改</t-button>
+    </view>
+    <view class="checkbox-wrapper">
+      <t-checkbox value="{{smartRecommend}}" bind:change="toggleSmartRecommend">启用智能推荐（基于您的睡眠习惯）</t-checkbox>
+    </view>
+  </view>
+
+  <view class="section">
+    <text class="section-title">起床时间</text>
+    <view class="time-setting">
+      <view class="time-info">
+        <text class="time-label">建议时间</text>
+        <text class="time-value">{{sleepTarget.wakeTime}}</text>
+      </view>
+      <t-button theme="primary" size="small" bind:tap="setWakeTime">修改</t-button>
+    </view>
+  </view>
+
+  <view class="section">
+    <text class="section-title">睡眠提醒</text>
+    <t-cell-group>
+      <t-cell title="就寝提醒" note="睡前30分钟提醒">
+        <t-switch slot="right-icon" value="{{reminders.bedtime}}" bind:change="toggleBedtimeReminder" />
+      </t-cell>
+      <t-cell title="起床提醒" note="起床时间提醒">
+        <t-switch slot="right-icon" value="{{reminders.wakeup}}" bind:change="toggleWakeupReminder" />
+      </t-cell>
+    </t-cell-group>
+  </view>
+
+  <view class="tip-card">
+    <t-icon name="info-circle" size="20px" color="#0052D9" />
+    <view class="tip-content">
+      <text class="tip-title">智能推荐说明</text>
+      <text class="tip-text">系统会根据您近期的睡眠数据、作息习惯和健康评测结果，为您推荐最适合的睡眠时间，帮助您建立规律的作息。</text>
+    </view>
+  </view>
+
+  <view class="save-wrapper">
+    <t-button theme="primary" size="large" bind:tap="saveSettings">保存</t-button>
+  </view>
+</view>
+

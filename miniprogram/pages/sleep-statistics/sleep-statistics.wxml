@@ -1,0 +1,79 @@
+<!--sleep-statistics.wxml-->
+<view class="container">
+  <!-- 统计概览 -->
+  <view class="stats-overview">
+    <view class="stat-item">
+      <text class="stat-value blue">{{stats.averageHours}}</text>
+      <text class="stat-label">平均时长(小时)</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-value green">{{stats.quality}}%</text>
+      <text class="stat-label">睡眠质量</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-value purple">{{stats.continuousDays}}</text>
+      <text class="stat-label">连续达标天数</text>
+    </view>
+  </view>
+
+  <!-- 睡眠时长趋势 -->
+  <view class="section">
+    <text class="section-title">睡眠时长趋势</text>
+    <view class="chart-container">
+      <view class="chart-bars">
+        <view class="chart-bar" wx:for="{{weekData}}" wx:key="day" style="height: {{item.height}}%">
+          <view class="bar"></view>
+        </view>
+      </view>
+      <view class="chart-labels">
+        <text wx:for="{{weekData}}" wx:key="day" class="chart-label">{{item.label}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 睡眠质量分析 -->
+  <view class="section">
+    <text class="section-title">睡眠质量分析</text>
+    <view class="quality-analysis">
+      <view class="quality-item" wx:for="{{qualityData}}" wx:key="type">
+        <view class="quality-info">
+          <text class="quality-name">{{item.name}}</text>
+          <text class="quality-value">{{item.value}} ({{item.percent}}%)</text>
+        </view>
+        <t-progress percentage="{{item.percent}}" color="{{item.color}}" />
+      </view>
+    </view>
+  </view>
+
+  <!-- 详细记录 -->
+  <view class="section">
+    <text class="section-title">详细记录</text>
+    <view class="record-list">
+      <view class="record-item" wx:for="{{records}}" wx:key="date">
+        <view class="record-header">
+          <text class="record-date">{{item.date}}</text>
+          <t-tag theme="{{item.status === '良好' ? 'success' : 'warning'}}" size="small">{{item.status}}</t-tag>
+        </view>
+        <view class="record-time">
+          <text>{{item.timeRange}}</text>
+          <text class="record-duration">{{item.duration}}小时</text>
+        </view>
+        <view class="record-details">
+          <text>深度睡眠: {{item.deepSleep}}</text>
+          <text>浅度睡眠: {{item.lightSleep}}</text>
+          <text>快速眼动: {{item.remSleep}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 睡眠建议 -->
+  <view class="suggestion-card">
+    <t-icon name="info-circle" size="20px" color="#0052D9" />
+    <view class="suggestion-content">
+      <text class="suggestion-title">睡眠建议</text>
+      <text class="suggestion-text">{{suggestion}}</text>
+    </view>
+  </view>
+</view>
+

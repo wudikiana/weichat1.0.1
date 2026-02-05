@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "睡眠计划",
+  "usingComponents": {
+    "t-icon": "tdesign-miniprogram/icon/icon"
+  }
+}
+

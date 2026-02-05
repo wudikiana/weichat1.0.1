@@ -1,0 +1,231 @@
+<!--health-assessment.wxml-->
+<view class="container">
+  <!-- 选择量表页面 -->
+  <view class="scale-selection" wx:if="{{currentStep === 0}}">
+    <view class="scale-header">
+      <text class="scale-title">健康心理评测</text>
+      <text class="scale-subtitle">请选择要进行的心理测评量表</text>
+    </view>
+
+    <!-- 统计信息 -->
+    <view class="stats-card" wx:if="{{stats && stats.totalCount > 0}}">
+      <view class="stats-title">
+        <t-icon name="chart" size="20px" color="#0052D9" />
+        <text>我的测评统计</text>
+      </view>
+      <view class="stats-grid">
+        <view class="stat-item">
+          <text class="stat-value">{{stats.totalCount}}</text>
+          <text class="stat-label">测评次数</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">{{stats.avgSasScore}}</text>
+          <text class="stat-label">平均SAS</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">{{stats.avgSdsScore}}</text>
+          <text class="stat-label">平均SDS</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value {{stats.latestStatus === '心理健康' ? 'good' : (stats.latestStatus.includes('重度') ? 'warning' : '')}}">{{stats.latestStatus}}</text>
+          <text class="stat-label">最新状态</text>
+        </view>
+      </view>
+      <view class="stats-actions">
+        <t-button theme="light" size="small" bind:tap="viewTrend">查看趋势</t-button>
+      </view>
+    </view>
+
+    <view class="scale-options">
+      <view
+        class="scale-card"
+        wx:for="{{scaleOptions}}"
+        wx:key="id"
+        style="border-color: {{item.color}}"
+        bind:tap="selectScale"
+        data-scale="{{item.id}}"
+      >
+        <view class="scale-icon" style="background: {{item.color}}20; color: {{item.color}}">
+          <t-icon name="chart-bar" size="32px" color="{{item.color}}" />
+        </view>
+        <view class="scale-info">
+          <text class="scale-name">{{item.name}}</text>
+          <text class="scale-desc">{{item.description}}</text>
+        </view>
+        <t-icon name="chevron-right" size="24px" color="#cccccc" />
+      </view>
+    </view>
+
+    <!-- 综合测评 -->
+    <view class="both-scales" bind:tap="startBothScales">
+      <view class="both-scales-icon">
+        <t-icon name="stack" size="28px" color="#0052D9" />
+      </view>
+      <view class="both-scales-info">
+        <text class="both-scales-name">综合心理测评</text>
+        <text class="both-scales-desc">同时完成SAS和SDS两项测评，获得更全面的心理健康评估</text>
+      </view>
+    </view>
+
+    <!-- 历史记录 -->
+    <view class="section" wx:if="{{history.length > 0}}">
+      <view class="section-header">
+        <text class="section-title">测评历史</text>
+        <text class="section-count">共{{history.length}}条</text>
+      </view>
+      
+      <view class="history-list">
+        <view class="history-item" wx:for="{{history}}" wx:key="id">
+          <view class="history-main" bind:tap="viewHistoryDetail" data-item="{{item}}">
+            <view class="history-left">
+              <text class="history-date">{{item.date}}</text>
+              <view class="history-tags">
+                <text class="tag sas" wx:if="{{item.sasScore > 0}}">焦虑{{item.sasScore}}分</text>
+                <text class="tag sds" wx:if="{{item.sdsScore > 0}}">抑郁{{item.sdsScore}}分</text>
+              </view>
+            </view>
+            <view class="history-right">
+              <text class="history-status" style="color: {{item.status === '心理健康' || item.status === '无焦虑' || item.status === '无抑郁' ? '#00A870' : (item.status.includes('重度') ? '#F5222D' : '#FA8C16')}}">{{item.status}}</text>
+              <text class="history-score">综合: {{item.totalScore}}分</text>
+            </view>
+          </view>
+          <view class="history-actions">
+            <t-button theme="light" size="mini" data-item="{{item}}" bind:tap="analyzeSAS">SAS分析</t-button>
+            <t-button theme="light" size="mini" data-item="{{item}}" bind:tap="analyzeSDS">SDS分析</t-button>
+            <t-button theme="default" size="mini" data-item="{{item}}" data-index="{{index}}" bind:tap="deleteHistoryItem">删除</t-button>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-history" wx:if="{{history.length === 0}}">
+      <view class="empty-icon">
+        <t-icon name="clipboard" size="48px" color="#cccccc" />
+      </view>
+      <text class="empty-text">暂无测评记录</text>
+      <text class="empty-hint">完成测评后记录将保存在这里</text>
+    </view>
+  </view>
+
+  <!-- 测评题目页面 -->
+  <view class="question-page" wx:if="{{currentStep === 1 || currentStep === 2}}">
+    <view class="question-header">
+      <t-icon name="arrow-left" size="24px" color="#333333" bind:tap="goBack" />
+      <text class="question-title">{{currentStep === 1 ? '焦虑自评量表(SAS)' : '抑郁自评量表(SDS)'}}</text>
+      <text class="question-progress">{{currentStep === 1 ? '第1部分/共2部分' : '第2部分/共2部分'}}</text>
+    </view>
+
+    <scroll-view scroll-y class="question-list">
+      <view class="question-item" wx:for="{{currentStep === 1 ? sasQuestions : sdsQuestions}}" wx:key="id" wx:for-item="questionItem">
+        <text class="question-text">{{questionItem.id}}. {{questionItem.text}}</text>
+        <view class="option-list">
+          <view
+            class="option-item {{questionItem.selectedValue === option.value ? 'selected' : ''}}"
+            wx:for="{{currentStep === 1 ? sasOptions : sdsOptions}}"
+            wx:for-item="option"
+            wx:key="value"
+            style="{{questionItem.selectedValue === option.value ? 'border-color: #0052D9; background: #E6F4FF;' : ''}}"
+            bind:tap="selectAnswer"
+            data-question-id="{{questionItem.id}}"
+            data-value="{{option.value}}"
+          >
+            <view class="option-radio {{questionItem.selectedValue === option.value ? 'checked' : ''}}">
+              <view class="option-dot" wx:if="{{questionItem.selectedValue === option.value}}"></view>
+            </view>
+            <text class="option-label">{{option.label}}</text>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+
+    <view class="submit-btn-wrapper">
+      <t-button
+        theme="primary"
+        size="large"
+        block
+        bind:tap="{{currentStep === 1 ? 'continueToSDS' : 'submitBothScales'}}"
+      >
+        {{currentStep === 1 ? '完成SAS，继续SDS' : '完成测评'}}
+      </t-button>
+    </view>
+  </view>
+
+  <!-- 结果展示页面 -->
+  <view class="result-page" wx:if="{{currentStep === 3}}">
+    <view class="result-header">
+      <t-icon name="arrow-left" size="24px" color="#333333" bind:tap="restartAssessment" />
+      <text class="result-title">测评结果</text>
+    </view>
+
+    <view class="result-card">
+      <view class="result-status-section">
+        <text class="result-status-label">心理健康状态</text>
+        <text class="result-status-value" style="color: {{result.status === '心理健康' || result.status === '无焦虑' || result.status === '无抑郁' ? '#00A870' : (result.status.includes('重度') ? '#F5222D' : '#FA8C16')}}">{{result.status}}</text>
+      </view>
+
+      <view class="result-date">{{result.date}}</view>
+
+      <!-- 分数表格 -->
+      <view class="score-table">
+        <view class="score-table-header">
+          <text class="table-cell header">测评项目</text>
+          <text class="table-cell header">得分</text>
+          <text class="table-cell header">参考范围</text>
+          <text class="table-cell header">结果</text>
+        </view>
+        <view class="score-table-row">
+          <text class="table-cell">焦虑(SAS)</text>
+          <text class="table-cell score">{{result.sasScore}}分</text>
+          <text class="table-cell range">
+            <text wx:if="{{result.sasScore < 50}}">0-49</text>
+            <text wx:elif="{{result.sasScore < 60}}">50-59</text>
+            <text wx:elif="{{result.sasScore < 70}}">60-69</text>
+            <text wx:else>70+</text>
+          </text>
+          <text class="table-cell result">
+            <text wx:if="{{result.sasScore < 50}}" style="color: #00A870">正常</text>
+            <text wx:elif="{{result.sasScore < 60}}" style="color: #FA8C16">轻度</text>
+            <text wx:elif="{{result.sasScore < 70}}" style="color: #FA8C16">中度</text>
+            <text wx:else style="color: #F5222D">重度</text>
+          </text>
+        </view>
+        <view class="score-table-row">
+          <text class="table-cell">抑郁(SDS)</text>
+          <text class="table-cell score">{{result.sdsScore}}分</text>
+          <text class="table-cell range">
+            <text wx:if="{{result.sdsScore < 53}}">0-52</text>
+            <text wx:elif="{{result.sdsScore < 63}}">53-62</text>
+            <text wx:elif="{{result.sdsScore < 73}}">63-72</text>
+            <text wx:else>73+</text>
+          </text>
+          <text class="table-cell result">
+            <text wx:if="{{result.sdsScore < 53}}" style="color: #00A870">正常</text>
+            <text wx:elif="{{result.sdsScore < 63}}" style="color: #FA8C16">轻度</text>
+            <text wx:elif="{{result.sdsScore < 73}}" style="color: #FA8C16">中度</text>
+            <text wx:else style="color: #F5222D">重度</text>
+          </text>
+        </view>
+        <view class="score-table-row total">
+          <text class="table-cell">综合评分</text>
+          <text class="table-cell score total">{{result.totalScore}}分</text>
+          <text class="table-cell range">-</text>
+          <text class="table-cell result">-</text>
+        </view>
+      </view>
+
+      <!-- 建议 -->
+      <view class="suggestion-section">
+        <view class="suggestion-header">
+          <t-icon name="tips" size="24px" color="#0052D9" />
+          <text class="suggestion-title">健康建议</text>
+        </view>
+        <text class="suggestion-text">{{result.suggestion}}</text>
+      </view>
+    </view>
+
+    <view class="result-actions">
+      <t-button theme="primary" size="large" bind:tap="restartAssessment">重新测评</t-button>
+    </view>
+  </view>
+</view>

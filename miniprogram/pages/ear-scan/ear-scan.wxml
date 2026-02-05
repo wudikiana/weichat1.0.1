@@ -1,0 +1,70 @@
+<!--ear-scan.wxml-->
+<view class="container">
+  <!-- 使用说明 -->
+  <view class="tip-card">
+    <t-icon name="info-circle" size="20px" color="#0052D9" />
+    <view class="tip-content">
+      <text class="tip-title">拍摄提示</text>
+      <text class="tip-item">• 确保光线充足，避免阴影遮挡</text>
+      <text class="tip-item">• 将耳朵完全放入引导框内</text>
+      <text class="tip-item">• 建议拍摄正面和侧面两个角度</text>
+      <text class="tip-item">• 保持手机稳定，避免模糊</text>
+    </view>
+  </view>
+
+  <!-- 拍摄区域 -->
+  <view class="scan-section">
+    <view class="scan-preview">
+      <view class="guide-frame"></view>
+      <view class="placeholder-icon">
+        <t-icon name="image" size="48px" color="#cccccc" />
+      </view>
+    </view>
+    <text class="scan-hint">请将耳朵放入引导框内</text>
+    <view class="scan-actions">
+      <t-button theme="default" size="large" bind:tap="chooseFromAlbum">从相册选择</t-button>
+      <t-button theme="primary" size="large" bind:tap="takePhoto">拍摄照片</t-button>
+    </view>
+  </view>
+
+  <!-- 拍摄角度建议 -->
+  <view class="angle-suggestions">
+    <text class="section-title">拍摄角度建议</text>
+    <view class="angle-grid">
+      <view class="angle-item">
+        <view class="angle-preview">
+          <t-icon name="view" size="24px" color="#cccccc" />
+        </view>
+        <text class="angle-label">正面角度</text>
+      </view>
+      <view class="angle-item">
+        <view class="angle-preview">
+          <t-icon name="view" size="24px" color="#cccccc" />
+        </view>
+        <text class="angle-label">侧面角度</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 扫描历史 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">扫描历史</text>
+      <text class="more-link">查看全部</text>
+    </view>
+    <view class="history-list">
+      <view class="history-item" wx:for="{{scanHistory}}" wx:key="id" bind:tap="viewResult" data-id="{{item.id}}">
+        <view class="history-image"></view>
+        <view class="history-info">
+          <text class="history-date">{{item.date}}</text>
+          <text class="history-result">分析结果：{{item.result}}</text>
+          <view class="history-tags">
+            <t-tag theme="{{item.status === '正常' ? 'success' : 'warning'}}" size="small">{{item.status}}</t-tag>
+            <text class="view-detail">查看详情</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+

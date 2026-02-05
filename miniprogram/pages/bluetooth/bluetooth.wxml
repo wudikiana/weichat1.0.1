@@ -1,0 +1,206 @@
+<!--bluetooth.wxml-->
+<view class="container">
+  <!-- 已连接设备控制 -->
+  <view class="section" wx:if="{{isConnected && currentDevice}}">
+    <text class="section-title">设备控制</text>
+    <view class="device-card connected">
+      <view class="device-header">
+        <view class="device-info">
+          <view class="device-icon bluetooth-connected">
+            <t-icon name="bluetooth" size="32px" color="#0052D9" />
+          </view>
+          <view class="device-details">
+            <text class="device-name">{{currentDevice.name}}</text>
+            <view class="device-status-row">
+              <view class="status-indicator">
+                <view class="status-dot connected"></view>
+                <text class="status-text">在线</text>
+              </view>
+              <text class="device-status">电量 {{currentDevice.battery || battery}}% · {{getBatteryLevel(currentDevice.battery || battery)}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 挡位控制 - 核心功能 -->
+      <view class="power-control">
+        <view class="control-header">
+          <text class="control-label">音量挡位调节</text>
+          <text class="power-description">{{getPowerLevelDescription(powerLevel)}}</text>
+        </view>
+        
+        <!-- 挡位数字显示 -->
+        <view class="power-display-section">
+          <view class="power-display">
+            <text class="power-value">{{powerLevel}}</text>
+            <text class="power-unit">挡</text>
+          </view>
+        </view>
+
+        <!-- 挡位滑块 -->
+        <view class="power-slider">
+          <view 
+            class="power-slider-track"
+            style="--progress: {{(powerLevel - 1) * 11.11}}%"
+          ></view>
+          <view 
+            class="power-slider-thumb"
+            style="left: calc({{(powerLevel - 1) * 11.11}}% - 12rpx)"
+            bind:tap="stopTouch"
+          ></view>
+        </view>
+
+        <!-- 挡位按钮 -->
+        <view class="power-buttons">
+          <t-button
+            theme="light"
+            size="small"
+            disabled="{{powerLevel <= 1}}"
+            bind:tap="adjustPowerLevel"
+            data-delta="{{-1}}"
+          >
+            <t-icon name="remove" size="20px" />
+          </t-button>
+          
+          <view class="power-levels">
+            <view
+              class="power-level-item {{index + 1 <= powerLevel ? 'active' : ''}} {{index + 1 === powerLevel ? 'current' : ''}}"
+              wx:for="{{powerLevels}}"
+              wx:key="*this"
+              bind:tap="quickSetPowerLevel"
+              data-level="{{item}}"
+            >
+              {{item}}
+            </view>
+          </view>
+
+          <t-button
+            theme="light"
+            size="small"
+            disabled="{{powerLevel >= 10}}"
+            bind:tap="adjustPowerLevel"
+            data-delta="{{1}}"
+          >
+            <t-icon name="add" size="20px" />
+          </t-button>
+        </view>
+
+        <!-- 挡位说明 -->
+        <view class="power-tips">
+          <view class="power-tip">
+            <text class="tip-label">低音量</text>
+            <text class="tip-range">1-3挡</text>
+          </view>
+          <view class="power-tip">
+            <text class="tip-label">中等音量</text>
+            <text class="tip-range">4-6挡</text>
+          </view>
+          <view class="power-tip">
+            <text class="tip-label">较大音量</text>
+            <text class="tip-range">7-8挡</text>
+          </view>
+          <view class="power-tip">
+            <text class="tip-label">最大音量</text>
+            <text class="tip-range">9-10挡</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="device-actions">
+        <t-button theme="default" size="small" bind:tap="disconnectDevice">断开连接</t-button>
+        <t-button theme="primary" size="small" bind:tap="viewDeviceDetail" data-device="{{currentDevice}}">设备详情</t-button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 扫描设备 -->
+  <view class="section">
+    <view class="section-header">
+      <text class="section-title">扫描设备</text>
+      <t-button
+        theme="{{isScanning ? 'disabled' : 'primary'}}"
+        size="small"
+        bind:tap="scanDevices"
+      >
+        {{isScanning ? '扫描中...' : '扫描'}}
+      </t-button>
+    </view>
+
+    <view class="device-list">
+      <view class="device-item" wx:for="{{nearbyDevices}}" wx:key="deviceId">
+        <view class="device-info">
+          <view class="device-icon {{item.signal === '强' ? 'bluetooth-strong' : (item.signal === '中' ? 'bluetooth-medium' : 'bluetooth-weak')}}">
+            <t-icon name="bluetooth" size="24px" />
+          </view>
+          <view class="device-details">
+            <text class="device-name">{{item.name}}</text>
+            <text class="device-status">信号: {{item.signal}} · RSSI: {{item.RSSI}}</text>
+          </view>
+        </view>
+        <t-button
+          theme="primary"
+          size="small"
+          bind:tap="connectDevice"
+          data-device="{{item}}"
+        >连接</t-button>
+      </view>
+
+      <view class="empty-tip" wx:if="{{nearbyDevices.length === 0 && !isScanning}}">
+        <view class="empty-icon">
+          <t-icon name="bluetooth" size="48px" color="#cccccc" />
+        </view>
+        <text class="empty-text">点击扫描按钮搜索附近蓝牙设备</text>
+        <text class="empty-hint">请确保设备已开启并处于配对模式</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 历史记录 -->
+  <view class="section" wx:if="{{historyDevices.length > 0}}">
+    <text class="section-title">历史记录 ({{historyDevices.length}})</text>
+    <view class="history-list">
+      <view class="history-item" wx:for="{{historyDevices}}" wx:key="id">
+        <view class="history-info" bind:tap="connectHistoryDevice" data-device="{{item}}">
+          <view class="history-icon">
+            <t-icon name="bluetooth" size="24px" color="#999999" />
+          </view>
+          <view class="history-details">
+            <text class="history-name">{{item.name}}</text>
+            <text class="history-meta">最后连接: {{item.lastConnectTime || item.connectTime}} · {{item.powerLevel || 5}}挡</text>
+          </view>
+        </view>
+        <view class="history-actions">
+          <t-button theme="light" size="small" data-device="{{item}}" bind:tap="connectHistoryDevice">重连</t-button>
+          <t-button theme="default" size="small" data-device="{{item}}" data-index="{{index}}" bind:tap="deleteHistoryDevice">删除</t-button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 使用说明 -->
+  <view class="section">
+    <text class="section-title">使用说明</text>
+    <view class="usage-tips">
+      <view class="tip-item">
+        <text class="tip-num">1</text>
+        <text class="tip-text">确保蓝牙设备已开启并处于配对模式</text>
+      </view>
+      <view class="tip-item">
+        <text class="tip-num">2</text>
+        <text class="tip-text">点击扫描按钮搜索附近的蓝牙设备</text>
+      </view>
+      <view class="tip-item">
+        <text class="tip-num">3</text>
+        <text class="tip-text">选择设备并连接，成功后可直接调节音量挡位</text>
+      </view>
+      <view class="tip-item">
+        <text class="tip-num">4</text>
+        <text class="tip-text">设备支持1-10挡音量调节，可根据需要选择</text>
+      </view>
+      <view class="tip-item">
+        <text class="tip-num">5</text>
+        <text class="tip-text">挡位设置会自动同步到云端</text>
+      </view>
+    </view>
+  </view>
+</view>
